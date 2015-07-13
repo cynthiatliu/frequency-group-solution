@@ -59,7 +59,7 @@ def formatTrain(clf, toFit):
         
     return trPointLabels, targetVariables
 
-#Formatting the presence array
+#Formatting the frequency array
 def formatFreq(arr, labels):
     count = 0
     for group in labels:
@@ -70,7 +70,7 @@ def formatFreq(arr, labels):
         
     return arr
 
-#Main - neural net for individual points, forest for presence arrays
+#Main - neural net for individual points, forest for frequency arrays
 def main():
     
     rawTrain = genCoords()
@@ -83,20 +83,20 @@ def main():
     rawX_test2 = buildTest(rawTest2)[:] #Used for actual testing
     print ("Onion - We've generated all points!")
     
-    #Define and train the individual-point neural net - b/c it's accurate
+    #Define and train the individual-point neural net
     clf1 = Classifier(
         layers=[
             Layer("Maxout", units=10, pieces=2),
             Layer("Maxout", units=10, pieces=2),
             Layer("Maxout", units=10, pieces=2),
-            Layer("Maxout", units=10, pieces=2),      
+            #Layer("Maxout", units=10, pieces=2),      
             Layer("Softmax")],
         learning_rate=0.001,
         n_iter=25)
     clf1.fit(rawX_train, rawY_train)
     print ("Beacon - We've defined and trained the individual point neural net!")
     
-    #Formatting the training data
+    #Formatting the actual training data
     medX_train, Y_train = formatTrain(clf1, rawX_test1) #Get it...raw, medium, well done? Ok, that was a horrid pun
     X_train = np.zeros([len(medX_train),7])
     X_train = formatFreq(X_train, medX_train)
@@ -105,7 +105,7 @@ def main():
     medX_test, groupSize = format(clf1, rawX_test2)
     
     #Reading the label groups to file
-    labelGroups = open("Label Groups 2.txt", 'w')
+    labelGroups = open("Label Groups 6.txt", 'w')
     counter = 1
     for group in medX_test:
         labelGroups.write(str(counter))
@@ -116,8 +116,8 @@ def main():
     X_test = np.zeros([len(medX_test),7])
     X_test = formatFreq(X_test, medX_test)
     
-    #Reading presence groups to file
-    freqGroups = open("Frequency Groups 1.txt", 'w')
+    #Reading frequency groups to file
+    freqGroups = open("Frequency Groups 5.txt", 'w')
     counter = 1
     for group in X_test:
         freqGroups.write(str(counter))
@@ -132,10 +132,12 @@ def main():
     clf2 = clf2.fit(X_train, Y_train)
     
     Y_test = clf2.predict(X_test)
-    results = open("results 2.txt", 'w')
+    results = open("results 6.txt", 'w')
     for i in range(len(Y_test)/5):
         results.write("{}\t{}\t{}\t{}\t{}".format(Y_test[5*i], Y_test[5*i+1], Y_test[5*i+2], Y_test[5*i+3], Y_test[5*i+4]))
         results.write("\n")
-        if (i%(math.ceil(1200/groupSize)) == (math.ceil(1200/groupSize)-1)): results.write("\n")    
+        if (i%(math.ceil(1200/groupSize)) == (math.ceil(1200/groupSize)-1)): results.write("\n")
+    
+    print ("Dark knight - We've built and predict on a forest, and resad the results to file")
         
 main()
