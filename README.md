@@ -1,3 +1,3 @@
 # frequency-group-solution
 
-So far the best solution I have to classifying lattice structures given Miller indices. The only somewhat troubling area is the distinction between I and P (body-centered and primitive). Otherwise, the program is great and should be resistent to noise as the difference between the frequency arrays for most pairs of structures is large and very visible and small changes minimally interfere with the larger pattern.
+After reducing the number of layers in the nueral net for individual point classification (from 4 to 3), I pretty much have ideal results. The frequencies for the group labels are perfect for all structures except primitive, and there is only one incorrectly labelled label group in primitive (note: I tried to visually determine the difference between that one group and other primitive groups, and there seems nothing special about it). So yay!
